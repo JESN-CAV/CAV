@@ -1,1 +1,1129 @@
 
+let allData = [];
+let chart;
+let drinkChart;
+let drinkedChart;
+let drinkedOffsetYears = 0;
+
+let countryFilter, regionFilter, appellationFilter, domaineFilter, colorFilter, vinFilter;
+
+// **********      Paramétrage des colonnes du fichier
+ 
+  const couleurc=10;
+  const dateachatc=4;
+  const ABoireEnc=13;
+  const BueEnc=2;
+  const Paysc=49;
+  const Regionc=48;
+  const Appellationc=15;
+  const domainec=7;
+  const IDc=0;
+  const Labelc=3;
+  const Cepagev1c=21;
+  const Cepagev2c=55;
+  const Cepagev3c=57;
+  const Cepagev4c=59;
+  const Cepagep1c=22;
+  const Cepagep2c=56;
+  const Cepagep3c=58;
+  const Cepagep4c=60;
+  const Cepagevc=61;
+  const Terroirc=52;
+  const Viticulturec=50;
+  const Vinificationc=66;
+  const Elevagec=67;
+  const ConseilDegustc=72;
+  const AccordsMetsVinsc=73;
+  const CommDegustc=74;
+  const Vinc=45;
+  
+  const IDCavec=5;
+  const Emplacementc=0;
+  const Horizontalc=1;
+  const Verticalc=2;
+  
+// **********      Lecture fichier CAVE physique
+
+  let secondData = [];   // Stockage du second fichier
+
+  //const loadSecondFileBtn = document.getElementById("loadSecondFileBtn");
+  const secondFileInput = document.getElementById("secondFileInput");
+
+  /* loadSecondFileBtn.addEventListener("click", function () {
+      secondFileInput.click();
+  }); */
+
+// **********      Lecture fichier CSV Cave
+
+  document.getElementById('csvFile').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+   
+    if (!file) return;//     Coeur du réacteur sur evt fichier chargé
+
+      const reader = new FileReader();
+    
+    reader.onload = function(evt) {
+        allData = parseCSV(evt.target.result,1);
+
+        const colors = [...new Set(allData.map(row => row[couleurc]))]
+         .filter(c => c && c.trim() !== "")
+          .sort();
+
+    initAllFilters();
+    updateAll();
+  };
+
+   
+ reader.readAsText(file);
+});
+
+
+//*********** Lecture fichier de la cave physique
+  
+  document.getElementById('secondFileInput').addEventListener('change', function(e) {
+  //secondFileInput.addEventListener("change", function (event) {
+
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+
+        const text = e.target.result;
+          // utilisation de TON parseCSV
+        secondData = parseCSV(text,2);
+
+        console.log("Second fichier chargé :", secondData.length, "lignes");
+
+        alert("Second fichier chargé : " + secondData.length + " lignes");
+      };
+
+      reader.readAsText(file);
+  });
+  
+// **********      Gestion des tabs
+
+function openTab(evt, tabName) {
+  const tabcontents = document.querySelectorAll('.tabcontent');
+  tabcontents.forEach(tc => tc.style.display = 'none');
+
+  const tablinks = document.querySelectorAll('.tablinks');
+  tablinks.forEach(tl => tl.classList.remove('active'));
+
+  document.getElementById(tabName).style.display = 'block';
+  evt.currentTarget.classList.add('active');
+}
+
+// Initialisation : on ouvre le premier onglet par défaut
+  
+  document.addEventListener('DOMContentLoaded', () => {
+      // Onglet actif
+      document.querySelector('.tablinks.active').click();
+
+      // Ne pas vider le tableau sous les graphes si tu veux qu'il reste vide
+      const tbody = document.querySelector('#bouteillesTable tbody');
+      tbody.innerHTML = ''; 
+  });
+
+// **********      Parse du fichier de bouteilles
+
+function parseCSV(text,fichierN) {
+
+    const separator = text.includes(';') ? ';' : ',';
+
+    const data = [];
+    let row = [];
+    let current = '';
+    let insideQuotes = false;
+
+    for (let i = 0; i < text.length; i++) {
+
+        const char = text[i];
+        const nextChar = text[i + 1];
+
+        // Gestion des guillemets
+        if (char === '"') {
+
+            // Gestion des guillemets échappés ""
+            if (insideQuotes && nextChar === '"') {
+                current += '"';
+                i++; // saute le second "
+            } else {
+                insideQuotes = !insideQuotes;
+            }
+
+        }
+
+        // Séparateur de colonne
+        else if (char === separator && !insideQuotes) {
+            row.push(current.trim());
+            current = '';
+        }
+
+        // Fin de ligne (si on n'est PAS dans des guillemets)
+        else if ((char === '\n' || char === '\r') && !insideQuotes) {
+
+            // Gestion Windows \r\n
+            if (char === '\r' && nextChar === '\n') {
+                i++;
+            }
+
+            row.push(current.trim());
+            data.push(row);
+
+            row = [];
+            current = '';
+        }
+
+        // Caractère normal
+        else {
+            current += char;
+        }
+    }
+
+    // Dernière cellule
+    if (current.length > 0 || row.length > 0) {
+        row.push(current.trim());
+        data.push(row);
+    }
+
+    // Supprimer la ligne d'en-tête
+    data.shift();
+
+    // Nettoyage comme dans ton codebase
+  if (fichierN == 1){
+      for (let row of data) {
+          row[Paysc] = row[Paysc]?.trim() || "(Non renseigné)";
+          row[Regionc] = row[Regionc]?.trim() || "(Non renseigné)";
+          row[Appellationc] = row[Appellationc]?.trim() || "(Non renseigné)";
+          row[domainec] = row[domainec]?.trim() || "(Non renseigné)";
+          row[couleurc] = row[couleurc]?.trim() || "(Non renseigné)";
+        }
+    }
+    return data;
+}
+
+
+
+// **********      Extraction de datetime et des ddmmyyyy et etc...
+
+  function extractYear(dateStr) {
+      if (!dateStr) return null;
+
+      const parts = dateStr.split('/');
+      if (parts.length !== 3) return null;
+
+      const day = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10) - 1;
+      const year = parseInt(parts[2], 10);
+
+      const date = new Date(year, month, day);
+
+      if (isNaN(date)) return null;
+
+      return year;
+  }
+
+  function parseDateFR(dateStr) {
+      if (!dateStr) return null;
+
+      const parts = dateStr.split('/');
+      if (parts.length !== 3) return null;
+
+      const day = parseInt(parts[0],10);
+      const month = parseInt(parts[1],10) - 1;
+      const year = parseInt(parts[2],10);
+
+      return new Date(year, month, day);
+  }
+
+  function isWithinLastMonths(date, months, offsetYears = 0) {
+
+      if (!date) return false;
+
+      const end = new Date();
+      end.setFullYear(end.getFullYear() - offsetYears);
+
+      const start = new Date(end);
+      start.setMonth(start.getMonth() - months);
+
+      return date >= start && date <= end;
+  }
+
+  function previousDrinkedYear(){
+      drinkedOffsetYears++;
+      updateAll();
+  }
+
+  function nextDrinkedYear(){
+      if (drinkedOffsetYears > 0) {
+          drinkedOffsetYears--;
+        updateAll();
+      }
+  }
+
+  function resetDrinkedYear(){
+      drinkedOffsetYears = 0;
+      updateAll();
+  }
+
+  function formatMonthYear(date) {
+      return date.toLocaleDateString('fr-FR', { month:'short', year:'numeric' });
+  }
+
+// **********      Gestion des filtres
+
+function createMultiSelect(containerId, labelText, values, onChange) {
+
+    const container = document.getElementById(containerId);
+    container.innerHTML = "";
+
+    const button = document.createElement("button");
+    const dropdown = document.createElement("div");
+    dropdown.className = "dropdown-content";
+
+    container.appendChild(button);
+    container.appendChild(dropdown);
+
+
+
+    function build(options) {
+
+      dropdown.innerHTML = "";
+
+    // ----- Champ de recherche =====
+      const searchContainer = document.createElement("div");
+      searchContainer.style.padding = "6px";
+      searchContainer.style.borderBottom = "1px solid #ddd";
+
+      const searchInput = document.createElement("input");
+      searchInput.type = "text";
+      searchInput.placeholder = "Rechercher...";
+      searchInput.style.width = "100%";
+      searchInput.style.padding = "4px";
+      searchInput.style.boxSizing = "border-box";
+      searchInput.style.fontSize = "13px";
+
+    searchContainer.appendChild(searchInput);
+    dropdown.appendChild(searchContainer);
+
+    // ----- Tout sélectionner
+    const allLabel = document.createElement("label");
+    const allCheckbox = document.createElement("input");
+    allCheckbox.type = "checkbox";
+    allCheckbox.checked = true;
+
+    const allSpan = document.createElement("span");
+    allSpan.textContent = "Tout sélectionner";
+
+    allLabel.appendChild(allCheckbox);
+    allLabel.appendChild(allSpan);
+    dropdown.appendChild(allLabel);
+
+    // ----- Options normales
+
+    options.forEach(val => {
+
+        const label = document.createElement("label");
+
+        const cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.value = val;
+        cb.checked = true;
+
+          const span = document.createElement("span");
+          span.textContent = val;
+
+          label.appendChild(cb);
+          label.appendChild(span);
+          dropdown.appendChild(label);
+      });
+    
+    // ===== Filtrage dynamique =====
+    searchInput.addEventListener("input", function() {
+
+        const searchValue = this.value.toLowerCase();
+        const labels = dropdown.querySelectorAll("label");
+
+        labels.forEach((label, index) => {
+
+            // On ne filtre PAS "Tout sélectionner"
+            if (index === 0) return;
+
+            const text = label.textContent.toLowerCase();
+
+            label.style.display =
+              text.includes(searchValue) ? "" : "none";
+        });
+    });
+    
+      attachEvents();
+      updateLabel();
+  }
+
+    function attachEvents() {
+
+        const checkboxes =
+            dropdown.querySelectorAll("input[type=checkbox]");
+
+        const allCheckbox = checkboxes[0];
+
+        allCheckbox.addEventListener("change", function() {
+            checkboxes.forEach(cb => cb.checked = this.checked);
+            updateLabel();
+            onChange();
+        });
+
+        checkboxes.forEach((cb, index) => {
+            if (index === 0) return;
+
+            cb.addEventListener("change", function() {
+                const allChecked =
+                    [...checkboxes].slice(1).every(c => c.checked);
+                allCheckbox.checked = allChecked;
+                updateLabel();
+                onChange();
+            });
+        });
+    }
+
+    function updateLabel() {
+        const checkboxes =
+            dropdown.querySelectorAll("input[type=checkbox]");
+
+        const selected =
+            [...checkboxes].slice(1).filter(cb => cb.checked);
+
+        button.textContent =
+            `${labelText} (${selected.length}/${checkboxes.length-1})`;
+    }
+
+    button.addEventListener("click", function() {
+        dropdown.classList.toggle("show");
+    });
+
+document.addEventListener("click", function(e) {
+    if (!container.contains(e.target)) {
+        dropdown.classList.remove("show");
+    }
+});
+
+  
+
+// Empêche la fermeture quand on clique dans le menu
+dropdown.addEventListener("click", function(e) {
+    e.stopPropagation();
+});
+
+    build(values);
+
+    return {
+        getSelected: () =>
+            [...dropdown.querySelectorAll("input[type=checkbox]")]
+            .slice(1)
+            .filter(cb => cb.checked)
+            .map(cb => cb.value),
+
+        updateOptions: (newValues) => build(newValues)
+    };
+}
+
+function updateRegions() {
+
+    const selectedCountries = countryFilter.getSelected();
+
+    const regions = [...new Set(
+        allData
+            .filter(r => selectedCountries.includes(r[Paysc])).map(r => r[Regionc])
+    )].filter(v => v).sort();
+
+    if (!regionFilter) {
+        regionFilter = createMultiSelect(
+            "filter-region",
+            "Région",
+            regions,
+            updateAppellations
+        );
+    } else {
+        regionFilter.updateOptions(regions);
+    }
+
+    updateAppellations();
+}
+
+function updateAppellations() {
+
+    const selectedRegions = regionFilter.getSelected();
+
+    const appellations = [...new Set(
+        allData
+            .filter(r => selectedRegions.includes(r[Regionc])).map(r => r[Appellationc])
+    )].filter(v => v).sort();
+
+    if (!appellationFilter) {
+        appellationFilter = createMultiSelect(
+            "filter-appellation",
+            "Appellation",
+            appellations,
+            updateDomaines
+        );
+    } else {
+        appellationFilter.updateOptions(appellations);
+    }
+
+    updateDomaines();
+}
+
+function updateDomaines() {
+
+    const selectedRegions = regionFilter.getSelected();
+    const selectedAppellations = appellationFilter.getSelected();
+
+    const domaines = [...new Set(
+        allData
+            .filter(r =>
+                selectedRegions.includes(r[Regionc]) &&
+                selectedAppellations.includes(r[Appellationc])
+            )
+            .map(r => r[domainec])
+    )].filter(v => v).sort();
+
+    if (!domaineFilter) {
+        domaineFilter = createMultiSelect(
+            "filter-domaine",
+            "Domaine",
+            domaines,
+            updateVins   // IMPORTANT
+        );
+    } else {
+        domaineFilter.updateOptions(domaines);
+    }
+
+    updateVins(); // cascade vers Vin
+}
+
+  function updateVins() {
+
+      const selectedRegions = regionFilter.getSelected();
+      const selectedAppellations = appellationFilter.getSelected();
+      const selectedDomaines = domaineFilter.getSelected();
+
+      const vins = [...new Set(
+        allData
+            .filter(r =>
+                selectedRegions.includes(r[Regionc]) &&
+                selectedAppellations.includes(r[Appellationc]) &&
+                selectedDomaines.includes(r[domainec])
+            )
+            .map(r => r[Vinc])
+      )].filter(v => v).sort();
+
+      if (!vinFilter) {
+        vinFilter = createMultiSelect(
+            "filter-vin",
+            "Vin",
+            vins,
+            updateAll
+        );
+      } else {
+        vinFilter.updateOptions(vins);
+      }
+
+      updateAll();
+  }
+
+function initAllFilters() {
+
+    // ----- Couleurs
+    const colors = [...new Set(allData.map(r => r[couleurc]))]
+        .filter(v => v).sort();
+
+    colorFilter = createMultiSelect(
+        "filter-color",
+        "Couleurs",
+        colors,
+        updateAll
+    );
+
+    // ----- Pays
+    const countries = [...new Set(allData.map(r => r[Paysc]))]
+        .filter(v => v).sort();
+
+    countryFilter = createMultiSelect(
+        "filter-country",
+        "Pays",
+        countries,
+        updateRegions
+    );
+
+    updateRegions();
+
+}
+
+
+// **********       Mise à jour graphique générique des charts      *******************
+
+function buildChart(config) {
+
+    const selectedColors = colorFilter.getSelected();
+    const selectedCountries = countryFilter.getSelected();
+    const selectedRegions = regionFilter.getSelected();
+    const selectedAppellations = appellationFilter.getSelected();
+    const selectedDomaines = domaineFilter.getSelected();
+    const selectedVins = vinFilter.getSelected();
+
+    const categories = config.categories();
+    const counts = categories.map(()=>0);
+
+    const rowsForCategory = categories.map(()=>[]);
+
+    allData.forEach(row => {
+
+        if (!selectedColors.includes(row[couleurc])) return;
+        if (!selectedCountries.includes(row[Paysc])) return;
+        if (!selectedRegions.includes(row[Regionc])) return;
+        if (!selectedAppellations.includes(row[Appellationc])) return;
+        if (!selectedDomaines.includes(row[domainec])) return;
+        if (!selectedVins.includes(row[Vinc])) return;
+
+        if (config.rowFilter && !config.rowFilter(row)) return;
+
+        const key = config.getKey(row);
+        if (key === null) return;
+
+        const index = categories.indexOf(key);
+
+        if (index !== -1) {
+            counts[index]++;
+            rowsForCategory[index].push(row);
+        }
+    });
+
+      const total = counts.reduce((a,b)=>a+b,0);
+    let chartTitle;
+    let startDate, endDate;
+
+if (config.type === 'colorLast12Months') {
+
+    endDate = new Date();
+    endDate.setFullYear(endDate.getFullYear() - drinkedOffsetYears);
+
+    startDate = new Date(endDate);
+    startDate.setMonth(startDate.getMonth() - 12);
+
+//alert('xtitle:'+config.xTitle+' startDate'+startDate + ' endDate'+endDate+ ' total:'+total)
+    chartTitle = config.xTitle
+        ? config.xTitle(startDate, endDate, total)
+        : config.title(total);
+
+} else {
+
+    chartTitle = config.title
+        ? config.title(total)
+        : "";
+}
+
+    Highcharts.chart(config.container, {
+
+          chart:{ type:'column', height:350 },
+
+          title:{
+        text:chartTitle,
+        useHTML:true},
+      legend: { enabled: false },
+      tooltip: { pointFormat: '{point.y}' },
+        xAxis:{
+            categories: categories.map(String),
+        title:{ text:null}
+        },
+
+        yAxis:{
+            min:0,
+            allowDecimals:false,
+            title:{ text:"Nombre de bouteilles"}
+        },
+        series:[{
+            name:config.seriesName,
+            data:counts,
+            color:config.color,
+            dataLabels:{
+                enabled:true,
+                formatter:function(){
+                    return this.y>0 ? this.y : null;
+                }
+            }
+        }],
+        plotOptions:{
+            column:{
+                cursor:'pointer',
+                point:{
+                    events:{
+                        click:function(){
+                            const index = this.index;
+                            populateTable(rowsForCategory[index]);
+                        }
+                    }
+                }
+            }
+        },
+
+        credits:{enabled:false}
+
+    });
+}
+
+
+
+// **********       Mise à jour graphique unitaire des charts
+
+  function years(start,end){
+      return Array.from({length:end-start+1},(_,i)=>start+i);
+  }
+  
+  const currentYear = new Date().getFullYear();
+
+    
+   // yearColumn: data
+
+  const charts = [
+  {
+    container:"container",
+    title: total => `Bouteilles achetées par année<span style="font-size:14px"> : ${total}
+    </span>`,
+      type: 'year',
+    seriesName:"Bouteilles",
+    color:"#3a3a3a",
+    xTitle:"Année",
+    categories: () => years(currentYear-9,currentYear),
+      getKey: row => extractYear(row[dateachatc])
+      },
+  {
+    container:"drinkContainer",
+    title: total => `Bouteilles à boire par année<span style="font-size:14px"> : ${total}
+    </span>`,
+      type: 'year',
+    seriesName:"À boire",
+    color:"#7a7a7a",
+    xTitle:"Année",
+    categories: () => years(currentYear-4,currentYear+8),
+    rowFilter: row => row[BueEnc].trim()==="",
+    getKey: row => parseInt(row[ABoireEnc],10)
+  },
+  {
+    container:"drinkedContainer",
+    title: total => `Bouteilles bues par année<span style="font-size:14px"> : ${total}
+    </span>`,
+      type: 'year',
+    seriesName:"Bues",
+    color:"#5a5a5a",
+    xTitle:"Année",
+    categories: () => years(currentYear-10,currentYear),
+    getKey: row => extractYear(row[BueEnc]),
+  },
+  {
+    container:"drinkedColorContainer",
+    title : total => `Bouteilles bues par couleur<span style="font-size:14px"> : ${total}
+    </span>`,
+    //xTitle: (startDate, endDate, total) => 'TEST',
+    xTitle: (startDate, endDate, total) =>
+        `Bouteilles bues par couleur<br>
+         <span style="font-size:14px">${formatMonthYear(startDate)} - ${formatMonthYear(endDate)} : 
+      ${total}</span>`,
+      type: 'colorLast12Months',
+    seriesName:"Bues",
+    color:"#444",
+    categories: () =>
+      [...new Set(allData.map(r => r[couleurc]))]
+          .filter(v => v)
+          .sort(),
+    rowFilter: row => {
+      const drinkDate = parseDateFR(row[BueEnc]);
+      return isWithinLastMonths(drinkDate,12,drinkedOffsetYears);
+    },
+    getKey: row => row[couleurc],
+    }
+  ];
+  
+
+
+
+// **********      
+
+function populateTable(rows) {
+
+    const tbody = document.querySelector('#bouteillesTable tbody');
+    tbody.innerHTML = '';
+
+    rows.forEach(r => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${r[IDc]}</td>
+            <td>${r[couleurc]}</td>
+            <td>${r[Labelc]}</td>
+            <td>${r[Regionc]}</td>
+            <td>${r[Appellationc]}</td>
+            <td>${r[ABoireEnc]}</td>
+            <td>${r[BueEnc]}</td>
+        `;
+
+        tr.style.cursor = "pointer";
+
+        tr.addEventListener("click", function () {
+
+            const id = r[IDc];
+
+            openTab(
+                { currentTarget: document.querySelectorAll('.tablinks')[1] },
+                'Bouteille'
+            );
+
+            bouteilleInput.value = id;
+
+            bouteilleInput.dispatchEvent(
+                new KeyboardEvent('keypress', {
+                    key: 'Enter',
+                    bubbles: true
+                })
+            );
+        });
+
+        tbody.appendChild(tr);
+    });
+}
+
+// **********  
+
+  function updateTableFromFilters() {
+      const selectedCountries = countryFilter.getSelected();
+      const selectedRegions = regionFilter.getSelected();
+      const selectedAppellations = appellationFilter.getSelected();
+      const selectedDomaines = domaineFilter.getSelected();
+      const selectedColors = colorFilter.getSelected();
+    const selectedVins = vinFilter.getSelected();
+
+      const filteredRows = allData.filter(row =>
+        selectedCountries.includes(row[Paysc]) &&
+        selectedRegions.includes(row[Regionc]) &&
+        selectedAppellations.includes(row[Appellationc]) &&
+        selectedDomaines.includes(row[domainec]) &&
+        selectedColors.includes(row[couleurc]) &&
+      selectedVins.includes(row[Vinc])
+      );
+
+    populateTable(filteredRows);
+    }
+
+  //***********      Appel les graphes
+
+  function updateAll() {
+      charts.forEach(config => buildChart(config));
+     //charts.forEach(c => buildChart(c))
+    //chartsConfig.forEach(cfg => updateChartGeneric(cfg));
+      //updateChart();
+      //updateDrinkChart();
+    //updateDrinkedChart();
+      //updateTableFromFilters();
+  }
+
+  //*********** Initialisation au chargement de la page
+  
+  document.addEventListener('DOMContentLoaded', () => {
+    // Onglet actif
+    document.querySelector('.tablinks.active').click();
+
+    // Tableau sous les graphes vide
+    const tbody = document.querySelector('#bouteillesTable tbody');
+    tbody.innerHTML = '';
+  });
+  
+  //*********** Ordonner les colonnes de la table
+  
+  function makeTableSortable(table) {
+      const headers = table.querySelectorAll("th");
+      headers.forEach((th, index) => {
+        th.style.cursor = "pointer";
+        th.addEventListener("click", () => {
+            const tbody = table.querySelector("tbody");
+            const rows = Array.from(tbody.querySelectorAll("tr"));
+            const asc = !th.asc;
+            th.asc = asc;
+
+            rows.sort((a, b) => {
+                const aText = a.children[index].textContent.trim();
+                const bText = b.children[index].textContent.trim();
+
+                // Tri numérique si possible
+                const aNum = parseFloat(aText.replace(',', '.'));
+                const bNum = parseFloat(bText.replace(',', '.'));
+
+                if (!isNaN(aNum) && !isNaN(bNum)) {
+                    return asc ? aNum - bNum : bNum - aNum;
+                } else {
+                    return asc ? aText.localeCompare(bText) : bText.localeCompare(aText);
+                }
+            });
+
+            // Réinjection des lignes triées
+            rows.forEach(row => tbody.appendChild(row));
+        });
+    });
+  }
+
+  // Après chaque appel à populateTable()
+  document.addEventListener('DOMContentLoaded', () => {
+      const table = document.getElementById('bouteillesTable');
+      makeTableSortable(table);
+  });
+  
+  //*********** Onglet bouteille via id
+  
+  const bouteilleInput = document.getElementById('bouteilleID');
+  const bouteilleError = document.getElementById('bouteilleError');
+  const bouteilleDetails = document.getElementById('bouteilleDetails');
+
+  bouteilleInput.addEventListener('keypress', function(e) { 
+    if (e.key === 'Enter') {
+        const idValue = parseInt(bouteilleInput.value, 10);
+
+        // Vérifie que c'est bien un entier
+        if (isNaN(idValue)) {
+            bouteilleError.textContent = "Veuillez saisir un entier valide";
+            bouteilleError.style.display = "inline";
+            bouteilleDetails.innerHTML = "";
+            return;
+        }
+
+        bouteilleError.style.display = "none";
+
+        // Cherche uniquement dans allData (fichier déjà chargé)
+        const foundRow = allData.find(r => parseInt(r[IDc], 10) === idValue);
+        const foundRow2 = secondData.find(r => parseInt(r[IDCavec], 10) === idValue);
+  
+        if (foundRow) {
+            let html = `<table style="border-collapse: collapse; width: 100%;">
+                <tr><td style="font-weight:600;padding:4px;">ID</td>
+            <td style="padding:4px;">${foundRow[IDc]}</td></tr>
+                <tr><td style="font-weight:600;padding:4px;">Label</td>
+            <td style="padding:4px;">${foundRow[Labelc]}</td></tr>
+           <tr><td style="font-weight:600;padding:4px;">Couleur</td>
+            <td style="padding:4px;">${foundRow[couleurc]}</td></tr>
+           <tr><td style="font-weight:600;padding:4px;">Domaine</td>
+            <td style="padding:4px;">${foundRow[domainec]}</td></tr>
+                <tr><td style="font-weight:600;padding:4px;">Région</td>
+            <td style="padding:4px;">${foundRow[Regionc]}</td></tr>
+                <tr><td style="font-weight:600;padding:4px;">Appellation</td><td            style="padding:4px;">${foundRow[Appellationc]}</td></tr>
+                <tr><td style="font-weight:600;padding:4px;">À boire</td>
+            <td style="padding:4px;">${foundRow[ABoireEnc]}</td></tr>
+            <tr>
+              <td style="font-weight:600;padding:4px;">Cépage 1</td>
+              <td style="padding:4px;">${foundRow[Cepagev1c]} à ${foundRow[Cepagep1c]}% </td>
+            </tr>
+            `;
+            // 👉 Cépage 2 seulement si valeur non vide
+            if (foundRow[Cepagev2c] && foundRow[Cepagev2c].trim() !== "" &&               foundRow[Cepagev2c].trim() !== "0") {
+                html += `
+                    <tr>
+                      <td style="font-weight:600;padding:4px;">Cépage 2</td>
+                      <td style="padding:4px;">
+                        ${foundRow[Cepagev2c]}${foundRow[Cepagep2c] ? " à " + foundRow[Cepagep2c]                   + "%" : ""}
+                      </td>
+                    </tr>
+                  `;
+            }
+            // 👉 Cépage 3 seulement si valeur non vide
+            if (foundRow[Cepagev3c] && foundRow[Cepagev3c].trim() !== "" &&               foundRow[Cepagev3c].trim() !== "0") {
+                html += `
+                    <tr>
+                      <td style="font-weight:600;padding:4px;">Cépage 3</td>
+                      <td style="padding:4px;">
+                        ${foundRow[Cepagev3c]}${foundRow[Cepagep3c] ? " à " + foundRow[Cepagep3c]                   + "%" : ""}
+                      </td>
+                    </tr>
+                  `;
+            }
+            // 👉 Cépage 4 seulement si valeur non vide
+            if (foundRow[Cepagev4c] && foundRow[Cepagev4c].trim() !== "" &&               foundRow[Cepagev4c].trim() !== "0") {
+                html += `
+                    <tr>
+                      <td style="font-weight:600;padding:4px;">Cépage 4</td>
+                      <td style="padding:4px;">
+                        ${foundRow[Cepagev4c]}${foundRow[Cepagep4c] ? " à " + foundRow[Cepagep4c]                   + "%" : ""}
+                      </td>
+                    </tr>
+                  `;
+            }
+            // 👉 Cépages seulement si valeur non vide
+            if (foundRow[Cepagevc] && foundRow[Cepagevc].trim() !== "" &&               foundRow[Cepagevc].trim() !== "0") {
+                html += `
+                    <tr>
+                      <td style="font-weight:600;padding:4px;">Cépages autres</td>
+                      <td style="padding:4px;">${foundRow[Cepagevc]}
+                      </td>
+                    </tr>
+                  `;
+            }
+            // 👉 Terroir seulement si valeur non vide
+            if (foundRow[Terroirc] && foundRow[Terroirc].trim() !== "" &&               foundRow[Terroirc].trim() !== "0") {
+                html += `
+                    <tr>
+                      <td style="font-weight:600;padding:4px;">Terroir</td>
+                      <td style="padding:4px;">${foundRow[Terroirc]}
+                      </td>
+                    </tr>
+                  `;
+            }
+            // 👉 Viticulture seulement si valeur non vide
+            if (foundRow[Viticulturec] && foundRow[Viticulturec].trim() !== "" &&               foundRow[Viticulturec].trim() !== "0") {
+                html += `
+                    <tr>
+                      <td style="font-weight:600;padding:4px;">Viticulture</td>
+                      <td style="padding:4px;">${foundRow[Viticulturec]}
+                      </td>
+                    </tr>
+                  `;
+            }
+            // 👉 Vinification seulement si valeur non vide
+            if (foundRow[Vinificationc] && foundRow[Vinificationc].trim() !== "" &&               foundRow[Vinificationc].trim() !== "0") {
+                html += `
+                    <tr>
+                      <td style="font-weight:600;padding:4px;">Vinification</td>
+                      <td style="padding:4px;">${foundRow[Vinificationc]}
+                      </td>
+                    </tr>
+                  `;
+            }
+            // 👉 Elevage seulement si valeur non vide
+            if (foundRow[Elevagec] && foundRow[Elevagec].trim() !== "" &&               foundRow[Elevagec].trim() !== "0") {
+                html += `
+                    <tr>
+                      <td style="font-weight:600;padding:4px;">Elevage</td>
+                      <td style="padding:4px;">${foundRow[Elevagec]}
+                      </td>
+                    </tr>
+                  `;
+            }
+            // 👉 Conseil degustation seulement si valeur non vide
+            if (foundRow[ConseilDegustc] && foundRow[ConseilDegustc].trim() !== "" &&               foundRow[ConseilDegustc].trim() !== "0") {
+                html += `
+                    <tr>
+                      <td style="font-weight:600;padding:4px;">Conseil de dégustation</td>
+                      <td style="padding:4px;">${foundRow[ConseilDegustc]}
+                      </td>
+                    </tr>
+                  `;
+            }
+            // 👉 Accords mets/vins seulement si valeur non vide
+            if (foundRow[AccordsMetsVinsc] && foundRow[AccordsMetsVinsc].trim() !== "" &&               foundRow[AccordsMetsVinsc].trim() !== "0") {
+                html += `
+                    <tr>
+                      <td style="font-weight:600;padding:4px;">Accords mets/vins</td>
+                      <td style="padding:4px;">${foundRow[AccordsMetsVinsc]}
+                      </td>
+                    </tr>
+                  `;
+            }
+            // 👉 Commentaires de dégustation seulement si valeur non vide
+            if (foundRow[CommDegustc] && foundRow[CommDegustc].trim() !== "" &&               foundRow[CommDegustc].trim() !== "0") {
+                html += `
+                    <tr>
+                      <td style="font-weight:600;padding:4px;">Commentaires de dégustation</td>
+                      <td style="padding:4px;">${foundRow[CommDegustc]}
+                      </td>
+                    </tr>
+                  `;
+            }
+            // 👉 Emplacement en cave seulement si valeur non vide
+            if (foundRow2[Emplacementc] && foundRow2[Emplacementc].trim() !== "" &&               foundRow2[Emplacementc].trim() !== "0") {
+                html += `
+                    <tr>
+                      <td style="font-weight:600;padding:4px;">En cave à l'emplacement</td>
+                      <td style="padding:4px;">${translate("Emplacement", foundRow2[Emplacementc])} ${foundRow2[Horizontalc]} ${foundRow2[Verticalc]}
+
+                      </td>
+                    </tr>
+                  `;
+            }
+            // 👉 Bue le seulement si valeur non vide
+            if (foundRow[BueEnc] && foundRow[BueEnc].trim() !== "" &&               foundRow[BueEnc].trim() !== "0") {
+                html += `
+                    <tr>
+                      <td style="font-weight:600;padding:4px;">Bue le</td>
+                      <td style="padding:4px;">${foundRow[BueEnc]}
+                      </td>
+                    </tr>
+                  `;
+            }
+            html+=`
+              </table>`;
+            bouteilleDetails.innerHTML = html;
+        } else {
+            bouteilleError.textContent = "ID introuvable";
+            bouteilleError.style.display = "inline";
+            bouteilleDetails.innerHTML = "";
+        }
+    }
+});
+
+  
+  //*********** Click sur une ligne du tableau
+  
+  function searchBouteilleById(idValue) {
+
+    const parsedId = parseInt(idValue, 10);
+
+    if (isNaN(parsedId)) {
+        bouteilleError.textContent = "Veuillez saisir un entier valide";
+        bouteilleError.style.display = "inline";
+        bouteilleDetails.innerHTML = "";
+        return;
+    }
+
+    bouteilleError.style.display = "none";
+
+    const foundRow = allData.find(r => parseInt(r[IDc], 10) === parsedId);
+
+    if (foundRow) {
+
+        let html = `<table style="border-collapse: collapse; width: 100%;">`;
+
+        html += `
+            <tr><td style="font-weight:600;padding:4px;">ID</td>
+            <td style="padding:4px;">${foundRow[IDc]}</td></tr>
+        `;
+
+        // ➜ garde ton reste de code ici (cépages etc.)
+
+        html += `</table>`;
+
+        bouteilleDetails.innerHTML = html;
+
+    } else {
+        bouteilleError.textContent = "ID introuvable";
+        bouteilleError.style.display = "inline";
+        bouteilleDetails.innerHTML = "";
+    }
+  }
+  
+  
+  
+    //*********** Traduction des codes
+    
+    const dictionaries = {
+        Emplacement: {
+        "RAN_PONT_ALO":"Pont Aloïne","RAN_BARTABA_":"Bartaba","RAN_LE_LAPIN":"Le lapin",
+        "RAN_LE_LIÈVR":"Le lièvre","RAN_LES_MONT":"Les monts","RAN_AUX_SENT":"Aux sentiers",
+        "RAN_ENVOUTÉE":"Envoutée","Temporaire":"Temporaire","Magnum house":"Magnum house",
+        "Plessis":"Plessis","La vitrine":"La vitrine","Beubeule":"Beubeule",
+        "RAN_DANLATEN":"Dans l'attente","RAN_DANSLANN":"Dans l'année",
+          },
+        Type: {
+          A1: "Grand Cru",A2: "Réserve"
+      }
+    }
+    
+    function translate(category, code) {
+        if (!code) return "";
+        const cleanCode = code.trim();
+        return dictionaries?.[category]?.[cleanCode] ?? cleanCode;
+    }
