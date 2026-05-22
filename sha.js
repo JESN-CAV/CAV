@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (versionElement) {
       //versionElement.textContent = data.sha;
-      versionElement.textContent =data.sha +"—"+ data.date;
+      versionElement.textContent =data.sha +"—"+ data.sha;
     }
 
   } catch (error) {
