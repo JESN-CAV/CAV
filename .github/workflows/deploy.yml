@@ -20,7 +20,7 @@ jobs:
 
       - name: Create version.json
         run: |
-          echo "{\"sha\":\"${GITHUB_SHA::7}\",\"date\":\"$(date -u +"%Y-%m-%d %H:%M UTC")\"}" > version.json
+          echo "{\"sha\":\"${GITHUB_SHA::7}\",\"when\":\"$(date -u +"%Y-%m-%d %H:%M UTC")\"}" > version.json
 
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v3
