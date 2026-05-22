@@ -15,11 +15,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const versionElement = document.getElementById('version');
 
     if (versionElement) {
-      //versionElement.textContent = data.sha;
-      const d = new Date(data.when);
-      const dt = d.toString();
+      
+      /*const d = new Date(data.when);
+      const dt = d.toString();*/
 
-      alert(dt);
+      alert(data.when);
       versionElement.textContent =data.sha +" — "+ dt;
     }
 
