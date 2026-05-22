@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', async () => {
+/*document.addEventListener('DOMContentLoaded', async () => {
 
   try {
 
@@ -28,5 +28,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       versionElement.textContent = 'dev';
     }
   }
+
+});*/
+document.addEventListener('DOMContentLoaded', () => {
+
+  console.log("sha.js chargé");
+
+  const versionElement = document.getElementById('version');
+
+  console.log(versionElement);
+
+  versionElement.textContent = "TEST";
 
 });
