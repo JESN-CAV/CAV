@@ -1,5 +1,7 @@
-async function loadVersion() {
+document.addEventListener('DOMContentLoaded', async () => {
+
   try {
+
     const response = await fetch('./version.json', {
       cache: 'no-store'
     });
@@ -10,13 +12,21 @@ async function loadVersion() {
 
     const data = await response.json();
 
-    document.getElementById('version').textContent = data.sha;
+    const versionElement = document.getElementById('version');
+
+    if (versionElement) {
+      versionElement.textContent = data.sha;
+    }
 
   } catch (error) {
-    console.error('Erreur version :', error);
 
-    document.getElementById('version').textContent = 'dev';
+    console.error('Erreur chargement version :', error);
+
+    const versionElement = document.getElementById('version');
+
+    if (versionElement) {
+      versionElement.textContent = 'dev';
+    }
   }
-}
 
-loadVersion();
+});
