@@ -49,9 +49,6 @@ let countryFilter, regionFilter, appellationFilter, domaineFilter, colorFilter, 
   //const loadSecondFileBtn = document.getElementById("loadSecondFileBtn");
   const secondFileInput = document.getElementById("secondFileInput");
 
-  /* loadSecondFileBtn.addEventListener("click", function () {
-      secondFileInput.click();
-  }); */
 
 // **********      Lecture fichier CSV Cave
 
