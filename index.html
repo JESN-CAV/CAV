@@ -45,12 +45,19 @@
 
 <div id="Overview" class="tabcontent">
   <div id="wine-dashboard" class="dashboard-grid"></div>
-  <div
-    class="wine-card"
-    id="vnbreCav"
-    data-value="248"
-    data-title="Bouteilles en cave">
+  <div class="wine-card">
+  <div class="wine-card__header">
+    <h3 class="wine-card__title">Bouteilles en cave</h3>
+    <button class="wine-card__info">  i</button>
   </div>
+  <div class="wine-card__value">
+    248
+  </div>
+
+  <p class="wine-card__description">
+    Nombre total de bouteilles actuellement stockées dans votre cave.
+  </p>
+</div>
 </div>
 <div id="Dashboard" class="tabcontent">
   <!-- Ici tes graphes Highcharts et filtres -->
