@@ -135,7 +135,7 @@ const dashboard = new Dashboard("wine-dashboard");
 dashboard.addCard({
   type: "stat",
   title: "Bouteilles",
-  value: "248",
+  value: "249",
   description:
     "Nombre total de bouteilles dans la cave."
 });
