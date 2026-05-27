@@ -140,13 +140,13 @@ dashboard.addCard({
     "Nombre total de bouteilles dans la cave."
 });
 
-dashboard.addCard({
+/*dashboard.addCard({
   type: "donut",
   title: "Disponibilité",
   total: 248,
   conformant: 180,
   nonConformant: 68
-});
+});*/
 
 dashboard.addCard({
   type: "stat",
