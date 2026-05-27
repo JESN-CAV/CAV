@@ -130,31 +130,34 @@ class Dashboard {
   }
 }
 
-const dashboard = new Dashboard("wine-overview");
+function InitAllCards(){
+  const dashboard = new Dashboard("wine-overview");
 
-dashboard.addCard({
-  type: "stat",
-  title: "Bouteilles",
-  value: BottleCount(),
-  description:
-    "Nombre total de bouteilles dans la cave."
-});
+  dashboard.addCard({
+      type: "stat",
+      title: "Bouteilles",
+      value: BottleCount(),
+      description:
+        "Nombre total de bouteilles dans la cave."
+    });
 
-/*dashboard.addCard({
-  type: "donut",
-  title: "Disponibilité",
-  total: 248,
-  conformant: 180,
-  nonConformant: 68
-});*/
+    /*dashboard.addCard({
+      type: "donut",
+      title: "Disponibilité",
+      total: 248,
+      conformant: 180,
+      nonConformant: 68
+    });*/
 
-dashboard.addCard({
-  type: "stat",
-  title: "Valeur",
-  value: CellarEstimation(),
-  description:
-    "Estimation actuelle de la cave."
-});
+    dashboard.addCard({
+      type: "stat",
+      title: "Valeur",
+      value: CellarEstimation(),
+      description:
+        "Estimation actuelle de la cave."
+    });
+  }
+
 
 function BottleCount() {
     const count = allData.filter(row =>

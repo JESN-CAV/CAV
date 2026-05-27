@@ -69,6 +69,7 @@ let countryFilter, regionFilter, appellationFilter, domaineFilter, colorFilter, 
 
     initAllFilters();
     updateAll();
+    InitAllCards();
   };
 
    
