@@ -610,7 +610,7 @@ if (config.type === 'colorLast12Months') {
     startDate.setMonth(startDate.getMonth() - 12);
 
 //alert('xtitle:'+config.xTitle+' startDate'+startDate + ' endDate'+endDate+ ' total:'+total)
-    chartTitle = config.xTitle
+    chartTitle = config.xTitle 
         ? config.xTitle(startDate, endDate, total)
         : config.title(total);
 
