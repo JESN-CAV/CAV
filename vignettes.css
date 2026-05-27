@@ -1,3 +1,35 @@
+
+/* =========================
+   DASHBOARD GRID
+========================= */
+
+.wine-dashboard {
+  display: grid;
+
+  gap: 20px;
+
+  /* Mobile */
+  grid-template-columns: 1fr;
+}
+
+/* iPad portrait */
+@media (min-width: 700px) {
+
+  .wine-dashboard {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+}
+
+/* iPad Pro paysage / desktop */
+@media (min-width: 1100px) {
+
+  .wine-dashboard {
+    grid-template-columns:
+      repeat(3, 1fr);
+  }
+}
+
 /* =========================
    WINE CARD
 ========================= */
