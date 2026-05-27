@@ -15,17 +15,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const versionElement = document.getElementById('version');
 
     if (versionElement) {
-      
-      const d = new Date(data.when);
-      const dt = d.toString();
-
-      //alert(data.when);
       versionElement.textContent =data.sha +" — "+ data.when;
     }
 
   } catch (error) {
 
-    console.error('Erreur chargement version :', error);
+    alert('Erreur chargement version :', error);
 
     const versionElement = document.getElementById('version');
 
