@@ -18,6 +18,7 @@ let countryFilter, regionFilter, appellationFilter, domaineFilter, colorFilter, 
   const Appellationc=15;
   const domainec=7;
   const IDc=0;
+  const Peutetrebuec=1;
   const Labelc=3;
   const Cepagev1c=21;
   const Cepagev2c=55;

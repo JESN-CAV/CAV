@@ -135,7 +135,7 @@ const dashboard = new Dashboard("wine-overview");
 dashboard.addCard({
   type: "stat",
   title: "Bouteilles",
-  value: "249",
+  value: BottleCount(),
   description:
     "Nombre total de bouteilles dans la cave."
 });
@@ -151,7 +151,16 @@ dashboard.addCard({
 dashboard.addCard({
   type: "stat",
   title: "Valeur",
-  value: "12 500€",
+  value: CellarEstimation(),
   description:
     "Estimation actuelle de la cave."
 });
+
+function BottleCount() {
+
+    return 330;
+    }
+function CellarEstimation() {
+
+    return "12 350€";
+    }
