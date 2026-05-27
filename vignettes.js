@@ -130,7 +130,7 @@ class Dashboard {
   }
 }
 
-const dashboard = new Dashboard("wine-dashboard");
+const dashboard = new Dashboard("wine-overview");
 
 dashboard.addCard({
   type: "stat",

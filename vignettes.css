@@ -53,7 +53,7 @@ body {
    DASHBOARD GRID
 ========================================================= */
 
-#wine-dashboard {
+#wine-overview {
 
   display: grid;
 
@@ -68,7 +68,7 @@ body {
 
 @media (min-width: 700px) {
 
-  #wine-dashboard {
+  #wine-overview {
 
     grid-template-columns:
       repeat(2, 1fr);
@@ -79,7 +79,7 @@ body {
 
 @media (min-width: 1100px) {
 
-  #wine-dashboard {
+  #wine-overview {
 
     grid-template-columns:
       repeat(3, 1fr);
@@ -89,7 +89,14 @@ body {
 /* =========================================================
    CARD
 ========================================================= */
+.widget-card {
 
+  background: blue !important;
+
+  padding: 40px !important;
+
+  border: 8px solid red !important;
+}
 .widget-card {
 
   width: 100%;
