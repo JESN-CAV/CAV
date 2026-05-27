@@ -16,6 +16,10 @@
 
   --text-secondary: #6f6f6f;
 
+  --green: #6dbb63;
+
+  --red: #d9534f;
+
   --shadow:
     0 1px 2px rgba(0,0,0,0.04),
     0 8px 24px rgba(0,0,0,0.06);
@@ -23,10 +27,6 @@
   --shadow-hover:
     0 2px 6px rgba(0,0,0,0.06),
     0 12px 32px rgba(0,0,0,0.10);
-
-  --info-border: #d4d4d4;
-
-  --info-color: #777;
 
   --background: #f5f5f7;
 }
@@ -53,7 +53,7 @@ body {
    DASHBOARD GRID
 ========================================================= */
 
-.wine-dashboard {
+#wine-dashboard {
 
   display: grid;
 
@@ -68,7 +68,7 @@ body {
 
 @media (min-width: 700px) {
 
-  .wine-dashboard {
+  #wine-dashboard {
 
     grid-template-columns:
       repeat(2, 1fr);
@@ -79,7 +79,7 @@ body {
 
 @media (min-width: 1100px) {
 
-  .wine-dashboard {
+  #wine-dashboard {
 
     grid-template-columns:
       repeat(3, 1fr);
@@ -87,10 +87,10 @@ body {
 }
 
 /* =========================================================
-   WINE CARD
+   CARD
 ========================================================= */
 
-.wine-card {
+.widget-card {
 
   width: 100%;
 
@@ -117,9 +117,9 @@ body {
     box-shadow 0.2s ease;
 }
 
-/* Effet lumineux premium */
+/* Light effect */
 
-.wine-card::before {
+.widget-card::before {
 
   content: "";
 
@@ -137,11 +137,11 @@ body {
   pointer-events: none;
 }
 
-/* Hover desktop uniquement */
+/* Hover desktop */
 
 @media (hover: hover) {
 
-  .wine-card:hover {
+  .widget-card:hover {
 
     transform: translateY(-2px);
 
@@ -153,7 +153,7 @@ body {
    HEADER
 ========================================================= */
 
-.wine-card__header {
+.card-header {
 
   display: flex;
 
@@ -164,7 +164,7 @@ body {
   margin-bottom: 20px;
 }
 
-.wine-card__title {
+.card-title {
 
   margin: 0;
 
@@ -178,10 +178,10 @@ body {
 }
 
 /* =========================================================
-   INFO BUTTON
+   INFO ICON
 ========================================================= */
 
-.wine-card__info {
+.info-icon {
 
   width: 22px;
 
@@ -189,17 +189,13 @@ body {
 
   border-radius: 50%;
 
-  border: 1px solid var(--info-border);
+  border: 1px solid #d4d4d4;
 
-  background: transparent;
-
-  color: var(--info-color);
+  color: #777;
 
   font-size: 12px;
 
   font-weight: 700;
-
-  cursor: pointer;
 
   display: flex;
 
@@ -207,23 +203,14 @@ body {
 
   justify-content: center;
 
-  padding: 0;
-
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease;
-}
-
-.wine-card__info:hover {
-
-  background: rgba(0,0,0,0.04);
+  flex-shrink: 0;
 }
 
 /* =========================================================
-   VALUE
+   STAT VALUE
 ========================================================= */
 
-.wine-card__value {
+.stat-value {
 
   font-size: clamp(2.8rem, 6vw, 4rem);
 
@@ -242,7 +229,7 @@ body {
    DESCRIPTION
 ========================================================= */
 
-.wine-card__description {
+.stat-description {
 
   margin: 0;
 
@@ -259,19 +246,19 @@ body {
 
 @media (max-width: 640px) {
 
-  .wine-card {
+  .widget-card {
 
     padding: 20px;
 
     border-radius: 20px;
   }
 
-  .wine-card__title {
+  .card-title {
 
     font-size: 1rem;
   }
 
-  .wine-card__description {
+  .stat-description {
 
     font-size: 0.95rem;
   }
