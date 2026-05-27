@@ -157,10 +157,12 @@ dashboard.addCard({
 });
 
 function BottleCount() {
-
-    return 330;
+    const count = allData.filter(row =>
+        String(row[Peutetrebuec] ?? "").trim() === "" &&
+        String(row[BueEnc] ?? "").trim() === ""
+        ).length;
+    return count;
     }
 function CellarEstimation() {
-
     return "12 350€";
     }
