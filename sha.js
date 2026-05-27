@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const dt = d.toString();
 
       //alert(data.when);
-      versionElement.textContent =data.sha +" — "+ dt;
+      versionElement.textContent =data.sha +" — "+ data.when;
     }
 
   } catch (error) {
