@@ -91,14 +91,6 @@ body {
 ========================================================= */
 .widget-card {
 
-  background: blue !important;
-
-  padding: 40px !important;
-
-  border: 8px solid red !important;
-}
-.widget-card {
-
   width: 100%;
 
   position: relative;
