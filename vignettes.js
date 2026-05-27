@@ -158,8 +158,8 @@ dashboard.addCard({
 
 function BottleCount() {
     const count = allData.filter(row =>
-        String(row[Peutetrebuec] ?? "").trim() === "" &&
-        String(row[BueEnc] ?? "").trim() === ""
+        String(row[1] ?? "").trim() === "" &&
+        String(row[2] ?? "").trim() === ""
         ).length;
     return count;
     }
