@@ -161,7 +161,7 @@ function InitAllCards(){
 
 function BottleCount() {
     const count = allData.filter(row =>
-        String(row[0] ?? "").trim() === "" &&
+        String(row[0] ?? "").trim() !== "" &&
         String(row[1] ?? "").trim() === "" &&
         String(row[2] ?? "").trim() === ""
         ).length;
