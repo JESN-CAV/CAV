@@ -168,5 +168,30 @@ function BottleCount() {
     return count;
     }
 function CellarEstimation() {
-    return "12 350€";
+    const cellarValue = allData
+    .filter(row => {
+
+      const col1 = String(row[0] ?? "").trim();
+      const col2 = String(row[1] ?? "").trim();
+      const col3 = String(row[2] ?? "").trim();
+
+      return (
+        col1 !== "" &&
+        col2 === "" &&
+        col3 === ""
+      );
+    })
+
+    .reduce((sum, row) => {
+
+      const prix = parseFloat(
+        String(row[6] ?? "0")
+          .replace(",", ".")
+      );
+
+      return sum + (isNaN(prix) ? 0 : prix);
+
+    }, 0);  
+    return cellarValue;
+    //return "12 350€";
     }
