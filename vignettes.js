@@ -192,6 +192,6 @@ function CellarEstimation() {
       return sum + (isNaN(prix) ? 0 : prix);
 
     }, 0);  
-    return cellarValue;
+    return Math.round(cellarValue).toLocaleString("fr-FR") + "€"
     //return "12 350€";
     }
