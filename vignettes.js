@@ -169,13 +169,13 @@ function InitAllCards(){
       description:
         "Bouteilles bues / 12 mois"
     });
-    /*dashboard.addCard({
+    dashboard.addCard({
       type: "stat",
       title: "Achetées",
-      value: getcountoflast12months(),
+      value: getcountoflast12months()-1,
       description:
         "Bouteilles achetées / 12 mois" 
-    });*/
+    });
   }
 
 
