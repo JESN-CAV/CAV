@@ -159,7 +159,7 @@ function InitAllCards(){
     dashboard.addCard({
       type: "stat",
       title: "Bues",
-      value: isWithinLastMonths(parseDateFR(row[2]),12,0),
+      value: getcountoflast12months(),
       description:
         "Bouteilles bues / 12 mois"
     });
@@ -208,4 +208,9 @@ function getLast12MonthsRows(data = allData) {
   return data.filter(row => {
     const drinkDate = parseDateFR(row[BueEnc]);
       return isWithinLastMonths(drinkDate,12,drinkedOffsetYears);});  
+}
+
+function getcountoflast12months(){
+  const last12MonthsRows = getLast12MonthsRows();
+  return last12MonthsRows.length;
 }
