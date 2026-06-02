@@ -172,7 +172,7 @@ function InitAllCards(){
     dashboard.addCard({
       type: "stat",
       title: "Achetées",
-      value: isWithinLastMonths(parseDateFR(row[2]),12,0),
+      value: getcountoflast12months(),
       description:
         "Bouteilles achetées / 12 mois" 
     });
