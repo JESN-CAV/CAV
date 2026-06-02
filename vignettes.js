@@ -159,7 +159,7 @@ function InitAllCards(){
     dashboard.addCard({
       type: "stat",
       title: "Bues",
-      value: isWithinLastMonths(parseDateFR(row[BueEnc]),12,0),
+      value: isWithinLastMonths(parseDateFR(row[2]),12,0),
       description:
         "Bouteilles bues / 12 mois"
     });
