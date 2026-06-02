@@ -1,8 +1,8 @@
 // **********      Paramétrage des colonnes du fichier
-const IDc=0;
+/*const IDc=0;
 const BueEnc=2;
 const Peutetrebuec=1;
-const dateachatc=4;
+const dateachatc=4;*/
 
 class Dashboard {
   constructor(containerId) {
