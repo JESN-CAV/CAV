@@ -220,7 +220,7 @@ function getLast12MonthsRows(data = allData) {
 
   return data.filter(row => {
     const drinkDate = parseDateFR(row[2]);
-      return isWithinLastMonths(drinkDate,12,drinkedOffsetYears);});  
+      return isWithinLastMonths(drinkDate,12,0);});  
 }
 
 function getcountoflast12months(){
