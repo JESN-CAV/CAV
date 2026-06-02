@@ -219,7 +219,7 @@ function CellarEstimation() {
 function getLast12MonthsRows(data = allData) {
 
   return data.filter(row => {
-    const drinkDate = parseDateFR(row[BueEnc]);
+    const drinkDate = parseDateFR(row[2]);
       return isWithinLastMonths(drinkDate,12,drinkedOffsetYears);});  
 }
 
