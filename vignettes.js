@@ -1,3 +1,9 @@
+// **********      Paramétrage des colonnes du fichier
+const IDc=0;
+const BueEnc=2;
+const Peutetrebuec=1;
+const dateachatc=4;
+
 class Dashboard {
   constructor(containerId) {
     this.container = document.getElementById(containerId);
@@ -162,6 +168,13 @@ function InitAllCards(){
       value: getcountoflast12months(),
       description:
         "Bouteilles bues / 12 mois"
+    });
+    dashboard.addCard({
+      type: "stat",
+      title: "Achetées",
+      value: isWithinLastMonths(parseDateFR(row[2]),12,0),
+      description:
+        "Bouteilles achetées / 12 mois"
     });
   }
 
