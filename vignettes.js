@@ -138,7 +138,7 @@ function InitAllCards(){
       title: "Bouteilles",
       value: BottleCount(),
       description:
-        "Nombre total de bouteilles dans la cave."
+        "Nombre total de bouteilles en cave"
     });
 
     /*dashboard.addCard({
@@ -154,7 +154,14 @@ function InitAllCards(){
       title: "Valeur",
       value: CellarEstimation(),
       description:
-        "Estimation actuelle de la cave."
+        "Estimation actuelle de la cave"
+    });
+    dashboard.addCard({
+      type: "stat",
+      title: "Bues",
+      value: isWithinLastMonths(parseDateFR(row[BueEnc]),12,0),
+      description:
+        "Bouteilles bues / 12 mois"
     });
   }
 
@@ -195,3 +202,10 @@ function CellarEstimation() {
     return Math.round(cellarValue).toLocaleString("fr-FR") + "€"
     //return "12 350€";
     }
+    // retourne les bouteilles bues sur les 12 derbiers mois
+function getLast12MonthsRows(data = allData) {
+
+  return data.filter(row => {
+    const drinkDate = parseDateFR(row[BueEnc]);
+      return isWithinLastMonths(drinkDate,12,drinkedOffsetYears);});  
+}
