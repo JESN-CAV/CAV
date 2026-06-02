@@ -165,14 +165,14 @@ function InitAllCards(){
     dashboard.addCard({
       type: "stat",
       title: "Bues",
-      value: getcountoflast12months(),
+      value: getcountoflast12months(2),
       description:
         "Bouteilles bues / 12 mois"
     });
     dashboard.addCard({
       type: "stat",
       title: "Achetées",
-      value: getcountoflast12months()-1,
+      value: getcountoflast12months(4),
       description:
         "Bouteilles achetées / 12 mois" 
     });
@@ -216,14 +216,14 @@ function CellarEstimation() {
     //return "12 350€";
     }
     // retourne les bouteilles bues sur les 12 derbiers mois
-function getLast12MonthsRows(data = allData) {
+function getLast12MonthsRows(theDateC,data = allData) {
 
   return data.filter(row => {
-    const drinkDate = parseDateFR(row[2]);
+    const drinkDate = parseDateFR(row[theDateC]);
       return isWithinLastMonths(drinkDate,12,0);});  
 }
 
-function getcountoflast12months(){
-  const last12MonthsRows = getLast12MonthsRows();
+function getcountoflast12months(theDateC){
+  const last12MonthsRows = getLast12MonthsRows(theDateC);
   return last12MonthsRows.length;
 }
