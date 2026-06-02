@@ -174,7 +174,7 @@ function InitAllCards(){
       title: "Achetées",
       value: isWithinLastMonths(parseDateFR(row[2]),12,0),
       description:
-        "Bouteilles achetées / 12 mois"
+        "Bouteilles achetées / 12 mois" 
     });
   }
 
