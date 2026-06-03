@@ -67,9 +67,11 @@ let countryFilter, regionFilter, appellationFilter, domaineFilter, colorFilter, 
          .filter(c => c && c.trim() !== "")
           .sort();
 
-    initAllFilters();
-    updateAll();
-    InitAllCards();
+        initAllFilters();
+        updateAll();
+        InitAllCards();
+
+        document.getElementById("csvLabel").classList.add("loaded");
   };
 
  reader.readAsText(file);
@@ -95,9 +97,8 @@ let countryFilter, regionFilter, appellationFilter, domaineFilter, colorFilter, 
           // utilisation de TON parseCSV
         secondData = parseCSV(text,2);
 
-        console.log("Second fichier chargé :", secondData.length, "lignes");
-
-        alert("Second fichier chargé : " + secondData.length + " lignes");
+        document.getElementById("caveLabel").classList.add("loaded");
+        //alert("Second fichier chargé : " + secondData.length + " lignes");
       };
 
       reader.readAsText(file);

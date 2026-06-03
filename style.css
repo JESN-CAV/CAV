@@ -136,6 +136,9 @@ body {
     background: #ddd;
   }
 
+  .upload-btn.loaded {
+    background-color: #f1f8e9;
+  }
   /* ===== Container onglets ===== */
   
   .tabs {
