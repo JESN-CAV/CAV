@@ -139,13 +139,7 @@ class Dashboard {
 function InitAllCards(){
   const dashboard = new Dashboard("wine-overview");
 
-  dashboard.addCard({
-      type: "stat",
-      title: "Bouteilles",
-      value: BottleCount(),
-      description:
-        "Nombre total de bouteilles en cave"
-    });
+  
 
     /*dashboard.addCard({
       type: "donut",
@@ -155,7 +149,13 @@ function InitAllCards(){
       nonConformant: 68
     });*/
 
-   
+   dashboard.addCard({
+      type: "stat",
+      title: "En cave",
+      value: BottleCount(),
+      description:
+        "Nombre total de bouteilles en cave"
+    });
     dashboard.addCard({
       type: "stat",
       title: "Bues",
