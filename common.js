@@ -72,10 +72,12 @@ let countryFilter, regionFilter, appellationFilter, domaineFilter, colorFilter, 
     InitAllCards();
   };
 
-   
  reader.readAsText(file);
 });
-
+//*********** Au démarrage de l'appli */
+    window.onload = function() {
+        document.getElementById("filtersRow").style.display = "none";
+    };
 
 //*********** Lecture fichier de la cave physique
   
@@ -112,6 +114,12 @@ function openTab(evt, tabName) {
 
   document.getElementById(tabName).style.display = 'block';
   evt.currentTarget.classList.add('active');
+
+  if (tabName === "Overview") {
+    filtersRow.classList.add("hidden");
+    } else {
+        filtersRow.classList.remove("hidden");
+    }
 }
 
 // Initialisation : on ouvre le premier onglet par défaut
