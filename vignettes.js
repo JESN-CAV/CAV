@@ -155,13 +155,7 @@ function InitAllCards(){
       nonConformant: 68
     });*/
 
-    dashboard.addCard({
-      type: "stat",
-      title: "Valeur",
-      value: CellarEstimation(),
-      description:
-        "Estimation actuelle de la cave"
-    });
+   
     dashboard.addCard({
       type: "stat",
       title: "Bues",
@@ -175,6 +169,13 @@ function InitAllCards(){
       value: getcountoflast12months(4),
       description:
         "Bouteilles achetées / 12 mois" 
+    });
+     dashboard.addCard({
+      type: "stat",
+      title: "Valeur",
+      value: CellarEstimation(),
+      description:
+        "Estimation actuelle de la cave"
     });
   }
 
