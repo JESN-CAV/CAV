@@ -118,9 +118,9 @@ function openTab(evt, tabName) {
     // Gestion des filtres
      const filtersRow = document.getElementById("filtersRow");
     if (tabName === "Overview") {
-        filtersRow.classList.add("hidden");
+        filtersRow.style.display = "none";
     } else {
-        filtersRow.classList.remove("hidden");
+        filtersRow.style.display = "flex";
     }
 }
 
