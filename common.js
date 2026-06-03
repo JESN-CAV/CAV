@@ -115,8 +115,10 @@ function openTab(evt, tabName) {
   document.getElementById(tabName).style.display = 'block';
   evt.currentTarget.classList.add('active');
 
-  if (tabName === "Overview") {
-    filtersRow.classList.add("hidden");
+    // Gestion des filtres
+     const filtersRow = document.getElementById("filtersRow");
+    if (tabName === "Overview") {
+        filtersRow.classList.add("hidden");
     } else {
         filtersRow.classList.remove("hidden");
     }
