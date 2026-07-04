@@ -762,6 +762,8 @@ if (config.type === 'colorLast12Months') {
 
 function populateTable(rows) {
 
+    alert(2);
+    alert(rows.length);
     const tbody = document.querySelector('#bouteillesTable tbody');
     tbody.innerHTML = '';
 
