@@ -671,6 +671,7 @@ if (config.type === 'colorLast12Months') {
                     events:{
                         click:function(){
                             const index = this.index;
+                            alert("Click sur " + this.category);
                             populateTable(rowsForCategory[index]);
                         }
                     }
@@ -762,7 +763,7 @@ if (config.type === 'colorLast12Months') {
 
 function populateTable(rows) {
 
-    alert(2);
+    //alert(2);
     alert(rows.length);
     const tbody = document.querySelector('#bouteillesTable tbody');
     tbody.innerHTML = '';
