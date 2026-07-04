@@ -114,6 +114,11 @@ function openTab(evt, tabName) {
   tablinks.forEach(tl => tl.classList.remove('active'));
 
   document.getElementById(tabName).style.display = 'block';
+  setTimeout(() => {
+    Highcharts.charts.forEach(chart => {
+        if (chart) chart.reflow();
+        });
+    }, 50);
   evt.currentTarget.classList.add('active');
 
     // Gestion des filtres
