@@ -675,8 +675,9 @@ if (config.type === 'colorLast12Months') {
                 point:{
                     events:{
                         click:function(){
-                            const index = this.index;
+                            alert("2");
                             alert("Click sur " + this.category);
+                            const index = this.index;
                             populateTable(rowsForCategory[index]);
                         }
                     }
