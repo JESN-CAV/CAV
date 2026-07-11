@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cave à vin - Visualisation:</title> 
+
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="vignettes.css">
+
+<!--<script src="https://code.highcharts.com/highcharts.js"></script> -->
+<script src="https://code.highcharts.com/12.6.0/highcharts.js"></script>
+
+</head>
+<body>
+  
+<div id="topControls">
+  <h2> Visualisation de la cave :  </h2>
+  <label id="csvLabel" class="upload-btn">Charger les bouteilles
+      <input type="file" id="csvFile" accept=".csv" hidden>
+  </label>
+                <!-- button id="loadSecondFileBtn" type="button" class="upload-btn">Charger fichier de cave</button -->
+  <label id="caveLabel" class="upload-btn">Charger la cave    <input type="file" id="secondFileInput" accept=".csv" style="display:none;">
+      <span id="bouteilleError" style="color:red;"></span>
+  </label>
+  <div id="filtersRow">
+      <div class="multi-select" id="filter-color"></div>
+      <div class="multi-select" id="filter-country"></div>
+      <div class="multi-select" id="filter-region"></div>
+      <div class="multi-select" id="filter-appellation"></div>
+      <div class="multi-select" id="filter-domaine"></div>
+      <div class="multi-select" id="filter-vin"></div>
+    </div>
+
+</div>
+
+<div class="tabs">
+     <button class="tablinks active" onclick="openTab(event, 'Overview')">Overview</button>
+     <button class="tablinks active" onclick="openTab(event, 'Dashboard')">En cave</button>
+    <button class="tablinks" onclick="openTab(event, 'Bouteille')">Bouteille</button>
+  <button class="tablinks" onclick="openTab(event, 'Achat')">Achat</button>
+  <button class="tablinks" onclick="openTab(event, 'Appreciation')">Appréciation</button>
+</div>
+
+<div id="Overview" class="tabcontent">
+  <!--div id="wine-dashboard" class="dashboard-grid"></div-->
+  <div class="wine-overview" id="wine-overview"></div>
+</div>
+<div id="Dashboard" class="tabcontent">
+  <!-- Ici tes graphes Highcharts et filtres -->
+
+
+  <div id="container"></div><br>
+    <div id="drinkContainer"></div>
+  <!-- Tableau sous les graphes -->
+  <h3>Liste des bouteilles filtrées</h3>
+  <div id="tableContainer" style="overflow-x:auto;">
+      <table id="bouteillesTable" class="sortable">
+        <thead>
+          <tr>
+          <th>ID</th>        
+          <th>Couleur</th>
+              <th>Label</th>
+              <th>Région</th>
+              <th>Appellation</th>
+              <th>À boire</th>
+              <th>Bue</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Les lignes seront insérées dynamiquement -->
+        </tbody>
+      </table>
+  </div>
+</div>
+
+<div id="Bouteille" class="tabcontent">
+    <!-- Ici ton tableau de bouteilles -->
+  <h3>Détail de la bouteille</h3>
+    <div id="bouteillesContent">
+      <div id="bouteilleSearchContainer" style="display: flex; align-items: center; gap: 10px;      margin-bottom: 20px;">
+          <div id="bouteilleSearchContainer" style="display:flex; align-items:center; gap:10px;">
+              <label for="bouteilleInput" style="font-weight:600;">ID</label>
+              <input type="text" id="bouteilleID" style="width:100px;">
+
+          
+          </div>
+        </div>
+      <div id="bouteilleDetails">
+        <!-- Les details de la ligne seront affichés ici -->
+    </div>
+    </div>
+</div>
+<div id="Achat" class="tabcontent">
+   <div id="drinkedContainer"></div>
+  <div style="margin-bottom:10px;">
+    <button onclick="previousDrinkedYear()" class="upload-btn">← 12 mois avant</button>
+    <button onclick="nextDrinkedYear()" class="upload-btn">12 mois après →</button>
+    <button onclick="resetDrinkedYear()" class="upload-btn">12 derniers mois</button>
+  </div>
+  <div id="drinkedColorContainer"></div>
+</div>
+
+<div id="Appreciation" class="tabcontent">
+    <h3>Appréciation</h3>
+    <p>Notes et dégustations</p>
+</div>
+<br/>
+<footer>
+  Version : <span id="version">...</span>
+</footer>
+
+<script src="sha.js"></script>
+<script src="common.js"></script>
+<script src="vignettes.js"></script>
+
+</body>
+</html>
