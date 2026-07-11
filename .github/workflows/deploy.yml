@@ -3,15 +3,13 @@ name: Deploy GitHub Pages
 on:
   push:
     branches:
-      - main
+      - '**'
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,21 +20,19 @@ jobs:
         run: |
           echo "{\"sha\":\"${GITHUB_SHA::7}\",\"when\":\"$(date -u +"%Y-%m-%d")\"}" > version.json
 
-      - name: Upload GitHub Pages artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Set destination path
+        id: dest
+        run: |
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            echo "path=." >> "$GITHUB_OUTPUT"
+          else
+            echo "path=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          path: .
-
-  deploy:
-    needs: build
-
-    runs-on: ubuntu-latest
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
+          destination_dir: ${{ steps.dest.outputs.path }}
+          keep_files: true
