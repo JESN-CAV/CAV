@@ -128,6 +128,14 @@ function openTab(evt, tabName) {
     } else {
         filtersRow.style.display = "flex";
     }
+
+    // Gestion du tableau partagé — visible seulement pour Dashboard (En cave) et Achat
+    const sharedTable = document.getElementById("sharedTableSection");
+    if (tabName === "Dashboard" || tabName === "Achat") {
+        sharedTable.style.display = "block";
+    } else {
+        sharedTable.style.display = "none";
+    }
 }
 
 // Initialisation : on ouvre le premier onglet par défaut
