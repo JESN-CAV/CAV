@@ -55,7 +55,7 @@ let countryFilter, regionFilter, appellationFilter, domaineFilter, colorFilter, 
 
   document.getElementById('csvFile').addEventListener('change', function(e) {
       const file = e.target.files[0];
-   
+    
     if (!file) return;//     Coeur du réacteur sur evt fichier chargé
 
       const reader = new FileReader();
