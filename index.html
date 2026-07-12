@@ -54,7 +54,7 @@
   <div id="container"></div><br>
     <div id="drinkContainer"></div>
   <!-- Tableau sous les graphes -->
-  <h3>Liste des bouteilles filtrées</h3>
+  <!--h3>Liste des bouteilles filtrées</h3>
   <div id="tableContainer" style="overflow-x:auto;">
       <table id="bouteillesTable" class="sortable">
         <thead>
@@ -68,11 +68,10 @@
               <th>Bue</th>
           </tr>
         </thead>
-        <tbody>
-          <!-- Les lignes seront insérées dynamiquement -->
+        <tbody>< Les lignes seront insérées dynamiquement >
         </tbody>
       </table>
-  </div>
+  </div-->
 </div>
 
 <div id="Bouteille" class="tabcontent">
@@ -106,6 +105,29 @@
     <h3>Appréciation</h3>
     <p>Notes et dégustations</p>
 </div>
+
+<!-- Tableau partagé, visible en dehors des onglets -->
+<div id="sharedTableSection">
+  <h3>Liste des bouteilles filtrées</h3>
+  <div id="tableContainer" style="overflow-x:auto;">
+      <table id="bouteillesTable" class="sortable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Couleur</th>
+            <th>Label</th>
+            <th>Région</th>
+            <th>Appellation</th>
+            <th>À boire</th>
+            <th>Bue</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+  </div>
+</div>  
+
 <br/>
 <footer>
   Version : <span id="version">...</span>
