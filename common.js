@@ -136,6 +136,10 @@ function openTab(evt, tabName) {
     } else {
         sharedTable.style.display = "none";
     }
+
+    // Vider le tableau à chaque changement d'onglet
+    const tbody = document.querySelector('#bouteillesTable tbody');
+    if (tbody) tbody.innerHTML = '';
 }
 
 // Initialisation : on ouvre le premier onglet par défaut
